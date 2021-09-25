@@ -3,6 +3,8 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"log"
+
 	_ "github.com/lib/pq"
 )
 
@@ -14,19 +16,23 @@ const (
 	dbname   = "tumar"
 )
 
-func connectDb() {
+func ConnectDb() {
 	psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 
 	// open database
 	DBConn, err := sql.Open("postgres", psqlconn)
-	CheckError(err)
+	if err != nil {
+		panic(err)
+	}
 
 	// close database
 	defer DBConn.Close()
 
 	// check db
 	err = DBConn.Ping()
-	CheckError(DBConn)
+	if err != nil {
+		panic(err)
+	}
 
-	fmt.Println("Connected!")
+	log.Println("Connected!")
 }
